@@ -1,3 +1,6 @@
+
+
+import { v4 as uuidv4 } from 'uuid'; // You need to install 'uuid' library if not already available
 import { IconClearAll, IconSettings } from '@tabler/icons-react';
 import {
   MutableRefObject,
@@ -307,14 +310,65 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
   };
   const throttledScrollDown = throttle(scrollDown, 250);
 
-  // useEffect(() => {
-  //   console.log('currentMessage', currentMessage);
-  //   if (currentMessage) {
-  //     handleSend(currentMessage);
-  //     homeDispatch({ field: 'currentMessage', value: undefined });
-  //   }
-  // }, [currentMessage]);
+  useEffect(() => {
+    // If the conversation has not started yet (i.e., no messages), send an introduction
+    if (selectedConversation?.messages.length === 0) {
+      const introMessage = {
+        role: 'assistant', // Adjust this as per your message structure
+        content: `🌟 Welcome! I'm ReX! 🤖  🌟
 
+        🚀 I'm your advanced AI-powered interview preparation buddy, 
+        designed specifically to supercharge your journey to 
+        becoming a stellar data analyst! 📊💻
+  
+        🔍 What I Offer:
+  
+        - A comprehensive database of technical questions 📚🤔
+        - Interactive quizzes on various data analytics topics 🧩🖥️
+        - In-depth feedback on your problem-solving approaches 🧐✍️
+        - Guidance in preparing for behavioral interviews using the STAR method 🌟🗣️
+        - Personality and communication style assessments 🙌🗨️
+  
+        🎯 My Mission: To deliver personalized and constructive feedback,
+         create real-world interview simulations, and adapt to your unique 
+         learning style. Let's make your prep for data analyst interviews
+         effective and fun! 🎉📈
+  
+        📋 Here's How I Help:
+  
+        - Behavioral Responses: When you tell me about a challenging 
+        situation from your past role, I'll critique your response 
+        with a focus on the STAR method. I'll make sure your Situation, 
+        Task, Action, and Result are crystal clear and impactful! 🌈📝
+        - Technical Explanations: Got a complex concept in 
+        [specific technology/programming language]? No problem! 
+        I’ll evaluate your explanation for clarity, depth, and 
+        communication skills. 🧠💬
+        - Problem-Solving Scenarios: Show me how you'd tackle a 
+        hypothetical technical scenario. I'll assess your logical 
+        reasoning, attention to detail, and ability to navigate 
+        through ambiguity. 🕵️‍♂️🔍
+  
+        Ready to dive in? Let's ace those interviews together! 🚀💪` // The rest of your introduction message
+      };
+  
+      // Dispatch the introductory message to the conversation state
+      const updatedConversation = {
+        ...selectedConversation,
+        messages: [introMessage, ...selectedConversation.messages],
+      };
+  
+      homeDispatch({
+        field: 'selectedConversation',
+        value: updatedConversation,
+      });
+  
+      // Optionally save the updated conversation
+      // saveConversation(updatedConversation);
+    }
+  }, []); // Empty dependency array ensures this runs only once on component mount
+  
+  // Existing useEffect hooks...
   useEffect(() => {
     throttledScrollDown();
     selectedConversation &&
